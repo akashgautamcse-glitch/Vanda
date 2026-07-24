@@ -1,24 +1,27 @@
 const express = require("express");
 const app = express();
-app.use("/fireback/test", (req,res) => {
-  res.send("Maine Heroien ho");
+
+
+
+
+app.get("/admin", (req, res) => {
+  res.send("now you get the data in some time");
 })
 
-app.use("/fireback", (req,res) =>{
-  res.send("chakede fadde");
+app.post("/admin", (req,res) =>{
+  res.send("you'r data is saved");
 })
 
-
-
-app.use("/", (req,res) => {
-  res.send("Lets's Nacho");
+app.delete("/admin", (req,res) => {
+  res.send("Data delete Successfully");
 })
 
+app.use("/admin", (req,res) => {
+  res.send("I'm Admin");
+}) 
 
 
-app.use("/test",(req,res)=>{
-  res.send("Hello from inside");
-})
+
 
 app.listen(9000, () =>{
   console.log("Server is listening on 9000");
