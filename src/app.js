@@ -62,11 +62,36 @@ app.delete("/user", async(req, res)=>{
 })
 
 //Update API - Update the data
-app.patch("/user", async(req, res) => {
+app.patch("/user/:u_id", async(req, res) => {
   const update_data = req.body;
-  const User = req.body.userId;
+  const User = req.params?.u_id; 
+  const ALLOWED_UPDATES = ["Bio", "Photo_URL", "FirstName", "LastName", "Password", "Skills"];
   try{
-    await user.findByIdAndUpdate({_id : User}, update_data,{runValidators : true});
+    console.log(update_data);
+    const isAllowed = Object.keys(update_data).every((k) => ALLOWED_UPDATES.includes(k));
+
+    if(!isAllowed){
+      throw new Error("This field can't be updated");   
+    };
+
+    if(update_data?.Skills.length > 10){
+      throw new Error("Skills can't be more than 10");
+      
+    }
+
+    const updated_user = await user.findByIdAndUpdate(
+      User,
+      update_data,
+      {
+        new : true,
+        runValidators : true
+      }
+    );
+
+    if(!updated_user){
+      return res.status(404).json({error : "user not found"});
+    }
+
     res.send("Data updated");
   } catch (err) {
     res.status(410).send("UPDATE FAILED :(" + err.message);
