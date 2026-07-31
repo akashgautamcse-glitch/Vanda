@@ -4,7 +4,6 @@ const app = express();
 const { connect_db } = require("./config/database");
 const { user } = require('../models/user');
 
-const Port = process.env.PORT;
 app.use(express.json());
 
 //Sign-Up API
@@ -46,9 +45,37 @@ app.get("/user", async(req, res) => {
   
 })
 
+//Delete API - Delete the user
+app.delete("/user", async(req, res)=>{
+  const userId = req.body.userId;
+  try{
+    const User = user.findById(userId);
+    if(User){
+    await user.deleteOne(User);
+    res.send("User deleted successfully.");
+    } else{
+      res.status(404).send("ser not found");
+    }
+  } catch (err) {
+    res.status(510).send("Something went wrong :( ");
+  }
+})
+
+//Update API - Update the data
+app.patch("/user", async(req, res) => {
+  const update_data = req.body;
+  const User = req.body.userId;
+  try{
+    await user.findByIdAndUpdate({_id : User}, update_data,{runValidators : true});
+    res.send("Data updated");
+  } catch (err) {
+    res.status(410).send("UPDATE FAILED :(" + err.message);
+  }
+})
+
 connect_db().then(() => {
   console.log("connection Established.");
-
+  const Port = process.env.PORT;
   app.listen(Port, ()=>{
     console.log(`Server is listening on ${Port}`);
   })
