@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
     type : String,
     maxlength : 50,
   },
-  gmail_id : {
+  email_id : {
     type : String,
     required : true,
     lowercase : true,
